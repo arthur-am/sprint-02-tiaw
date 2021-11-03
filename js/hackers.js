@@ -31,16 +31,20 @@ const hackers = [
     }
 ];
 
+var storage = [];
 
 const createHackers = () => {
     const hackersRow = document.getElementById("hackers-row");
+
     hackers.forEach(hacker => {
         hackersRow.innerHTML += createHackersCard(hacker);
+		storage.push({title: hacker.name, content: hacker.content, id: hacker.id, innerText: hackersRow.innerText})
     });
+	
+	localStorage.setItem('hackerCard', JSON.stringify(storage));
 }
 
 const createHackersCard = (hacker) => {
-
     return `
     <div class="col-md-12 shadow pt-3 mb-5">
         <div class="row d-flex flex-row align-items-center justify-content-between">
@@ -58,7 +62,6 @@ const createHackersCard = (hacker) => {
         </div>
     </div>
     `;
-
 }
 
 createHackers();

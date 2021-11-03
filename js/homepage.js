@@ -71,36 +71,68 @@ const createTopicCard = (topic) => {
 createRelavantTopicSection();
 
 function filterByKeyword(filterKeyword) {
-	const elementsID = ["relevant-row"];
-	var newFilteredUl = document.createElement('ul'),
-	    newLi, 
-	    list = [];
+	if (filterKeyword === ' ' || filterKeyword === ''){
+		return;
+	}
 	
-	elementsID.forEach(elementID => {
-		list.concat(document.querySelector('#'+elementID).childNodes)	
+	var divSearch = document.getElementById('filteredList');
+	
+	if (divSearch && divSearch.firstChild){
+		divSearch.removeChild(divSearch.firstChild);
+	}
+			
+	const elementHomeID = "relevant-row";
+	var newFilteredUl = document.createElement('ul'),
+		newLi = document.createElement('li'), 
+		list = [];
+	
+	let cardsHackers = JSON.parse(localStorage.getItem('hackerCard'));
+			
+	(cardsHackers || []).forEach(e => {
+		list.push(e)
 	});
 	
-	console.log(list);
-				
-        try {
+	nodesHome = document.querySelector('#'+elementHomeID).childNodes;
+	nodesHome.forEach(item => {
+		if (item && item.nodeType && item.nodeType !== 1 && item.nextSibling) {
+			list.push(item);
+		}
+	})
+					
+	try {
 		(list || []).forEach(item => {
 			if (item && item.nodeType && item.nodeType !== 1 && item.nextSibling) {
-				console.log(item);
 				let textItem = item.nextSibling.innerText.toLowerCase();
 				filterKeyword = filterKeyword.toLowerCase();
-
+			
 				if (textItem.indexOf(filterKeyword) !== -1) {
-					let id
-					newLi = document.createElement('li')
 					var newLiText = document.createElement('p')
+					let id
+
+					console.log(item)
 
 					if (item && item.id) {
 						id = item.id;
 					} else if (item.parentElement && item.parentElement.id) {
 						id = item.parentElement.id;
 					}
+					
+					newLiText.innerHTML = '<a href="#'+id+'" title='+item.nextSibling.innerText+'">'+item.nextSibling.innerText+'</a>'
+					newLi.appendChild(newLiText)
+				}
+			} else if (item && item.id) {
+				let textItem = item.title.toLowerCase();
+				filterKeyword = filterKeyword.toLowerCase();
+			
+				if (textItem.indexOf(filterKeyword) !== -1) {
+					var newLiText = document.createElement('p')
+					let id
 
-					newLiText.innerHTML = '<a href="#'+id+'" title="http://example.com">'+item.nextSibling.innerText+'</a>'
+					if (item && item.id) {
+						id = item.id;
+					}
+					
+					newLiText.innerHTML = '<a href="hackers.html#'+id+'" title='+item.innerText+'">'+item.innerText+'</a>'
 					newLi.appendChild(newLiText)
 				}
 			}
@@ -109,10 +141,11 @@ function filterByKeyword(filterKeyword) {
 		if (newLi) {
 			newFilteredUl.appendChild(newLi)
 		}
-        } catch (e) { 
-          console.error(e)
-        }
-        return newFilteredUl
+	} catch (e) { 
+	  console.error(e)
+	}
+	
+	return newFilteredUl
 }
 
 var button = document.querySelector('#search')
