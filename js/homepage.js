@@ -71,38 +71,44 @@ const createTopicCard = (topic) => {
 createRelavantTopicSection();
 
 function filterByKeyword(filterKeyword) {
-        var list = document.querySelector('#relevant-row').childNodes,
-			  newFilteredUl = document.createElement('ul'),
-			  newLi;
+	const elementsID = ["relevant-row"];
+	var newFilteredUl = document.createElement('ul'),
+	    newLi, 
+	    list = [];
+	
+	elementsID.forEach(elementID => {
+		list.concat(document.querySelector('#'+elementID).childNodes)	
+	});
+	
+	console.log(list);
 				
         try {
-			list.forEach(item => {
-				console.log(filterKeyword);
-				if (item && item.nodeType && item.nodeType !== 1 && item.nextSibling) {
-					console.log(item);
-					let textItem = item.nextSibling.innerText.toLowerCase();
-					filterKeyword = filterKeyword.toLowerCase();
-					
-					if (textItem.indexOf(filterKeyword) !== -1) {
-						let id
-						newLi = document.createElement('li')
-						var newLiText = document.createElement('p')
-						
-						if (item && item.id) {
-							id = item.id;
-						} else if (item.parentElement && item.parentElement.id) {
-							id = item.parentElement.id;
-						}
+		(list || []).forEach(item => {
+			if (item && item.nodeType && item.nodeType !== 1 && item.nextSibling) {
+				console.log(item);
+				let textItem = item.nextSibling.innerText.toLowerCase();
+				filterKeyword = filterKeyword.toLowerCase();
 
-						newLiText.innerHTML = '<a href="#'+id+'" title="http://example.com">'+item.nextSibling.innerText+'</a>'
-						newLi.appendChild(newLiText)
+				if (textItem.indexOf(filterKeyword) !== -1) {
+					let id
+					newLi = document.createElement('li')
+					var newLiText = document.createElement('p')
+
+					if (item && item.id) {
+						id = item.id;
+					} else if (item.parentElement && item.parentElement.id) {
+						id = item.parentElement.id;
 					}
+
+					newLiText.innerHTML = '<a href="#'+id+'" title="http://example.com">'+item.nextSibling.innerText+'</a>'
+					newLi.appendChild(newLiText)
 				}
-			})
-			
-			if (newLi) {
-				newFilteredUl.appendChild(newLi)
 			}
+		})
+
+		if (newLi) {
+			newFilteredUl.appendChild(newLi)
+		}
         } catch (e) { 
           console.error(e)
         }
