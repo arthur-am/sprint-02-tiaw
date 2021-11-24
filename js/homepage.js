@@ -78,8 +78,8 @@ const updateTopic = (topic_id) => {
 	const titleTopic = document.getElementById("titleTopic"+topic_id);
 	const contentTopic = document.getElementById("contentTopic"+topic_id);
 
-	titleTopic.innerHTML = newTitle;
-	contentTopic.innerHTML = newContent;
+	if (newTitle && newTitle !== '') titleTopic.innerHTML = newTitle;
+	if (newContent && newContent !== '') contentTopic.innerHTML = newContent;
 }
 
 const createTopicCard = (topic) => {
