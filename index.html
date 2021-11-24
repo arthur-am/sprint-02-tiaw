@@ -54,12 +54,22 @@
         </div>
     </div>
 	
-	<input id="keyword" type="text" />
-    <button id="search">
-      Buscar
-    </button>
+  <div class="form-group d-flex flex-column align-items-center justify-content-center mt-3">
+    <div class="d-flex flex-row">
+      <div class="input-group-md mb-3">
+        <input class="form-control border border-secondary" id="keyword" type="text" placeholder="Palavra chave..."/>
+      </div>
+      
+      <button class="btn btn-info text-white mb-3 ms-3 text-sm" id="search">
+        Buscar
+      </button>
+    </div>
+    
+
     <div id="filteredList">
     </div>
+  </div>
+	
 
     <div class="relevant-topics pt-5 pb-5" id="relevant-topics">
         <div class="container">

@@ -50,6 +50,38 @@ const createRelavantTopicSection = () => {
 
 }
 
+let createModalEdit = (topic_id) => {
+	
+    const topic = relevantTopics.find(topic => topic.id == topic_id);
+
+    if(!topic) {
+        return;
+    }
+
+    const title = document.getElementById("relevant-title");
+    title.innerHTML = `
+				<input type="text" id="contentTitleEdit" name="content" placeholder="`+topic.name+`">               
+    `;
+
+    const body = document.getElementById("relevant-body");
+    body.innerHTML = `
+				<input type="text" id="contentEdit" name="content" placeholder="`+topic.content+`">               
+				<button class="btn ml-5" onclick="updateTopic(${topic.id})" data-bs-toggle="modal" data-bs-target="#myModal"><span>Editar</span></button>
+    `;
+}
+
+const updateTopic = (topic_id) => {
+	
+    const newContent = document.getElementById("contentEdit").value;
+	const newTitle = document.getElementById("contentTitleEdit").value;
+	
+	const titleTopic = document.getElementById("titleTopic"+topic_id);
+	const contentTopic = document.getElementById("contentTopic"+topic_id);
+
+	titleTopic.innerHTML = newTitle;
+	contentTopic.innerHTML = newContent;
+}
+
 const createTopicCard = (topic) => {
     const topicContent = topic.content.substr(0, 150) + (topic.content.length > 150 ? '...' : '');
 
@@ -57,10 +89,11 @@ const createTopicCard = (topic) => {
     <div class="col-md-6 pb-5">
         <div class="card border-0">
             <div class="content">
-                <h3 class="pb-3">${topic.name}</h3>
-                <p>${topicContent}</p>
+                <h3 class="pb-3" id="`+"titleTopic"+topic.id+`">${topic.name}</h3>
+                <p  id="`+"contentTopic"+topic.id+`">${topicContent}</p>
                 <button class="btn btn-outline-info mt-3" onclick="createModal(${topic.id})" data-bs-toggle="modal" data-bs-target="#myModal"><span>Aprenda mais</span></button>
-            </div>
+				<button class="btn mt-3" onclick="createModalEdit(${topic.id})" data-bs-toggle="modal" data-bs-target="#myModal"><span>Editar</span></button>           
+		   </div>
         </div>
     </div>
     `;
@@ -75,14 +108,14 @@ function filterByKeyword(filterKeyword) {
 		return;
 	}
 	
-	var divSearch = document.getElementById('filteredList');
+	let divSearch = document.getElementById('filteredList');
 	
 	if (divSearch && divSearch.firstChild){
 		divSearch.removeChild(divSearch.firstChild);
 	}
 			
 	const elementHomeID = "relevant-row";
-	var newFilteredUl = document.createElement('ul'),
+	let newFilteredUl = document.createElement('ul'),
 		newLi = document.createElement('li'), 
 		list = [];
 	
@@ -106,7 +139,7 @@ function filterByKeyword(filterKeyword) {
 				filterKeyword = filterKeyword.toLowerCase();
 			
 				if (textItem.indexOf(filterKeyword) !== -1) {
-					var newLiText = document.createElement('p')
+					let newLiText = document.createElement('p')
 					let id
 
 					console.log(item)
@@ -117,6 +150,7 @@ function filterByKeyword(filterKeyword) {
 						id = item.parentElement.id;
 					}
 					
+
 					newLiText.innerHTML = '<a href="#'+id+'" title='+item.nextSibling.innerText+'">'+item.nextSibling.innerText+'</a>'
 					newLi.appendChild(newLiText)
 				}
@@ -125,7 +159,7 @@ function filterByKeyword(filterKeyword) {
 				filterKeyword = filterKeyword.toLowerCase();
 			
 				if (textItem.indexOf(filterKeyword) !== -1) {
-					var newLiText = document.createElement('p')
+					let newLiText = document.createElement('p')
 					let id
 
 					if (item && item.id) {
@@ -148,11 +182,30 @@ function filterByKeyword(filterKeyword) {
 	return newFilteredUl
 }
 
-var button = document.querySelector('#search')
+let button = document.querySelector('#search')
 
 button.onclick = function() {
-	var keyword = document.querySelector('#keyword').value
-	var newList = filterByKeyword(keyword)
 	
-	document.querySelector('#filteredList').appendChild(newList)
+	let keyword = document.querySelector('#keyword').value
+
+	let filteredListItem = document.querySelector('#filteredList')
+	
+	filteredListItem.className += ' shadow p-5';
+
+	if(!keyword) {
+		filteredListItem.innerHTML = "Nada encontrado.";
+		return;
+	}
+
+	let newList = filterByKeyword(keyword)
+	const lis = newList.getElementsByTagName('li');
+
+	for (let item of lis) {
+		item.innerText.length > 0 ? null : newList.removeChild(item);
+	}
+
+	if(lis.length === 0) return filteredListItem.innerHTML = "Nada encontrado.";
+
+	filteredListItem.appendChild(newList);
+
 }
